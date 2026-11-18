@@ -45,18 +45,19 @@ public partial class App : Application
     private bool ReplaceRunningInstance()
     {
         IntPtr hwnd = FindWindow(null, "WinStatusBar");
-        if (hwnd != IntPtr.Zero) PostMessage(hwnd, 0x0010 /* WM_CLOSE */, IntPtr.Zero, IntPtr.Zero);
-
-        foreach (var p in Process.GetProcessesByName("WinStatusBar"))
+        if (hwnd != IntPtr.Zero)
         {
-            if (p.Id == Environment.ProcessId) continue;
+            // Only the process that owns the bar window; the --sensors helper must keep running.
+            GetWindowThreadProcessId(hwnd, out uint pid);
+            PostMessage(hwnd, 0x0010 /* WM_CLOSE */, IntPtr.Zero, IntPtr.Zero);
             try
             {
+                using var p = Process.GetProcessById((int)pid);
                 if (!p.WaitForExit(5000)) p.Kill();
             }
             catch
             {
-                // Different elevation level: cannot touch it.
+                // Already gone, or a different elevation level: cannot touch it.
             }
         }
 
@@ -88,6 +89,9 @@ public partial class App : Application
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern IntPtr FindWindow(string? cls, string title);
+
+    [DllImport("user32.dll")]
+    private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
 
     [DllImport("user32.dll")]
     private static extern bool PostMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);

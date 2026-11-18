@@ -40,6 +40,16 @@ public partial class MainWindow : Window
             _appBar = new AppBar(this, BarHeight, _settings.Edge);
             ApplyEdgeVisuals();
             _usage = new UsageService(new WindowInteropHelper(this).Handle);
+
+            // GPU rendering sometimes leaves stale pixels on screen (e.g. after sleep), so old
+            // and new bar values overlap. The bar is tiny, so software rendering costs nothing.
+            var src = (HwndSource)PresentationSource.FromVisual(this);
+            src.CompositionTarget.RenderMode = RenderMode.SoftwareOnly;
+            Microsoft.Win32.SystemEvents.PowerModeChanged += (_, e) =>
+            {
+                if (e.Mode == Microsoft.Win32.PowerModes.Resume)
+                    Dispatcher.BeginInvoke(new Action(ForceRedraw));
+            };
         };
         Loaded += (_, _) =>
         {
@@ -164,6 +174,16 @@ public partial class MainWindow : Window
         StatsPanel.Children.Add(item);
         return value;
     }
+
+    private void ForceRedraw()
+    {
+        InvalidateVisual();
+        var h = new WindowInteropHelper(this).Handle;
+        if (h != IntPtr.Zero) RedrawWindow(h, IntPtr.Zero, IntPtr.Zero, 0x0185); // INVALIDATE|ERASE|ALLCHILDREN|UPDATENOW
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool RedrawWindow(IntPtr hWnd, IntPtr rect, IntPtr rgn, uint flags);
 
     private void ApplyEdgeVisuals()
     {
