@@ -47,3 +47,7 @@ Cài từ bản tự build: `.\tools\install.ps1 -Source .\publish\WinStatusBar.
 Phát hành bản mới: đẩy tag dạng `v1.0.0`, GitHub Actions sẽ build và tạo Release kèm exe.
 
 Chuột phải vào thanh để chuyển lên trên/xuống dưới hoặc thoát.
+
+## Giấy phép
+
+MIT, xem [LICENSE](LICENSE).
