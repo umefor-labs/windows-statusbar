@@ -1,0 +1,44 @@
+﻿<Window x:Class="WinStatusBar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WinStatusBar"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Topmost="True"
+        Width="800" Height="26"
+        Background="{DynamicResource BarBackground}"
+        Foreground="{DynamicResource BarText}"
+        FontFamily="Segoe UI Variable Text, Segoe UI"
+        FontSize="12"
+        Typography.NumeralAlignment="Tabular">
+  <Window.ContextMenu>
+    <ContextMenu>
+      <MenuItem x:Name="MoveMenu" Header="Chuyển lên trên" Click="OnMoveClick"/>
+      <Separator/>
+      <MenuItem Header="Thoát" Click="OnExitClick"/>
+    </ContextMenu>
+  </Window.ContextMenu>
+
+  <Border x:Name="RootBorder" BorderBrush="{DynamicResource BarBorder}" BorderThickness="0,1,0,0">
+    <Grid Margin="10,0,8,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/><ColumnDefinition Width="320"/><ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Left: AI usage -->
+      <StackPanel x:Name="UsagePanel" Grid.Column="0" Orientation="Horizontal"
+                  HorizontalAlignment="Left" VerticalAlignment="Center" ClipToBounds="True"/>
+
+      <!-- Center: media controls -->
+      <ContentControl x:Name="MediaHost" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+      <!-- Right: system stats -->
+      <StackPanel Grid.Column="2" Orientation="Horizontal"
+                  HorizontalAlignment="Right" VerticalAlignment="Center">
+        <StackPanel x:Name="StatsPanel" Orientation="Horizontal" VerticalAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>
