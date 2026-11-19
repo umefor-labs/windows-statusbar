@@ -317,7 +317,7 @@ class ChatAvatar : Grid
     /// <summary>The fixed chat icon at the start of the strip: an original speech bubble drawn in white.</summary>
     public static ChatAvatar ChatIcon()
     {
-        var glyph = new Path
+        var glyph = new System.Windows.Shapes.Path
         {
             Data = System.Windows.Media.Geometry.Parse("M 2,2 H 12 A 2,2 0 0 1 14,4 V 9 A 2,2 0 0 1 12,11 H 6 L 3,14 V 11 H 2 A 2,2 0 0 1 0,9 V 4 A 2,2 0 0 1 2,2 Z"),
             Fill = Brushes.White, Width = 11, Height = 11, Stretch = Stretch.Uniform,
