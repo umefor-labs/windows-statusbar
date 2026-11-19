@@ -2,21 +2,30 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
+    <!-- Messenger code finds screens through WinForms. -->
+    <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>WinStatusBar</AssemblyName>
     <RootNamespace>WinStatusBar</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Keep WPF's Application, Image, Brush... unambiguous. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
     <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.1" />
+    <ProjectReference Include="..\MessengerBubbles.Core\MessengerBubbles.Core.csproj" />
+    <EmbeddedResource Include="Messenger\Assets\probe.js" LogicalName="probe.js" />
+    <EmbeddedResource Include="Messenger\Assets\panel.js" LogicalName="panel.js" />
+    <EmbeddedResource Include="Messenger\Assets\new-message.wav" LogicalName="new-message.wav" />
   </ItemGroup>
 
 </Project>

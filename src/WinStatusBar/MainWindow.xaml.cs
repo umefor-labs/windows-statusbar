@@ -23,6 +23,19 @@ public partial class MainWindow : Window
         _antigravity.ToolTip = "Antigravity\nMở Antigravity để cập nhật.";
         UsagePanel.Children.Add(_antigravity);
 
+        // Messenger: chat avatars right after the usage meters; they blink on new messages.
+        _messenger = new MessengerBubbles.MessengerModule();
+        UsagePanel.Children.Add(_messenger.Strip);
+        var menu = ContextMenu;
+        menu.Items.Insert(menu.Items.IndexOf(MoveMenu) + 1, _messenger.BuildMenu());
+        // Facebook's page can change under the Messenger code; a failure there must not take the bar down.
+        Application.Current.DispatcherUnhandledException += (_, e) =>
+        {
+            if (e.Exception.StackTrace?.Contains("MessengerBubbles.") != true) return;
+            UsageService.Log($"messenger: {e.Exception.GetType().Name}: {e.Exception.Message}");
+            e.Handled = true;
+        };
+
         // Center: media.
         MediaHost.Content = new MediaPanel();
 
@@ -56,10 +69,12 @@ public partial class MainWindow : Window
             StartMonitor();
             StartUsageLoop();
             StartAntigravityLoop();
+            _ = _messenger.StartAsync();
         };
         Closed += (_, _) =>
         {
             _cts.Cancel();
+            _messenger.Dispose();
             _appBar?.Dispose();
         };
 
@@ -209,5 +224,6 @@ public partial class MainWindow : Window
     private UsageService? _usage;
     private readonly UsageMeter _antigravity;
     private readonly UsageMeter _codex;
+    private readonly MessengerBubbles.MessengerModule _messenger;
     private Settings _settings = new();
 }

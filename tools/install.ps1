@@ -36,8 +36,8 @@ if (-not $isAdmin) {
 
 function Say($msg) { Write-Host "WinStatusBar: $msg"; Add-Content -Path $log -Value $msg }
 
-function Has-DesktopRuntime8 {
-    try { return [bool](& dotnet --list-runtimes 2>$null | Select-String 'Microsoft\.WindowsDesktop\.App 8\.') }
+function Has-DesktopRuntime10 {
+    try { return [bool](& dotnet --list-runtimes 2>$null | Select-String 'Microsoft\.WindowsDesktop\.App 10\.') }
     catch { return $false }
 }
 
@@ -46,11 +46,11 @@ $exe = Join-Path $dir 'WinStatusBar.exe'
 Set-Content -Path $log -Value "Install started $(Get-Date -Format s)"
 
 try {
-    # 1. .NET 8 Desktop Runtime (the exe is framework-dependent).
-    if (-not (Has-DesktopRuntime8)) {
-        Say 'installing .NET 8 Desktop Runtime...'
-        $rt = Join-Path $env:TEMP 'windowsdesktop-runtime-8-win-x64.exe'
-        Invoke-WebRequest -UseBasicParsing 'https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe' -OutFile $rt
+    # 1. .NET 10 Desktop Runtime (the exe is framework-dependent).
+    if (-not (Has-DesktopRuntime10)) {
+        Say 'installing .NET 10 Desktop Runtime...'
+        $rt = Join-Path $env:TEMP 'windowsdesktop-runtime-10-win-x64.exe'
+        Invoke-WebRequest -UseBasicParsing 'https://aka.ms/dotnet/10.0/windowsdesktop-runtime-win-x64.exe' -OutFile $rt
         Start-Process $rt -ArgumentList '/install', '/quiet', '/norestart' -Wait
     }
 
